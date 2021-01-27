@@ -1,3 +1,4 @@
+
 package br.com.cast.avaliacao.model;
 
 import javax.persistence.Entity;

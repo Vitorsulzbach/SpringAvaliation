@@ -5,6 +5,7 @@ import Sidebar from "./pages/components/Sidebar";
 import p404 from "./pages/404/404";
 import Home from "./pages/home/home";
 import Categorias from "./pages/categorias/categorias";
+import Cursos from "./pages/cursos/cursos";
 import { LinkContainer } from "react-router-bootstrap";
 
 
@@ -46,6 +47,7 @@ class App extends React.Component {
       <BrowserRouter>
         <Switch>
           <MyRoute exact path='/categorias' component={Categorias} />
+          <MyRoute exact path='/cursos' component={Cursos} />
           <MyRoute exact path='/' component={Home} />
           <MyRoute exact path='*' component={p404} />
         </Switch>

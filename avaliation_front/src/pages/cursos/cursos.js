@@ -1,5 +1,5 @@
 import React from "react";
-import './categorias.css'
+import './cursos.css'
 import { Card, Row, Col, Button, Modal } from "react-bootstrap";
 const axios = require('axios');
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
