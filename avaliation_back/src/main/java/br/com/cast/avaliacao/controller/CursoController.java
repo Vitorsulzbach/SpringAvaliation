@@ -42,7 +42,7 @@ public class CursoController {
     }
 
     @PostMapping("/save/")
-    public Curso post(HttpServletResponse response, @RequestBody Curso curo) {
-        return service.save(curo);
+    public Curso post(HttpServletResponse response, @RequestBody Curso curso) {
+        return service.save(curso);
     }
 }

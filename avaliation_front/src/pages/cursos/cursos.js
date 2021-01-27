@@ -1,20 +1,27 @@
 import React from "react";
 import './cursos.css'
-import { Card, Row, Col, Button, Modal } from "react-bootstrap";
+import { Card, Row, Col, Button, Modal, Form } from "react-bootstrap";
+import dateFormat from 'dateformat';
+import DateTimePicker from 'react-datetime-picker';
 const axios = require('axios');
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
-class Categorias extends React.Component {
+class Cursos extends React.Component {
 
   constructor(props) {
     super(props)
     this.state = {
-      categorias: [],
-      categoria: {
-        id: 2,
-        codigo: 2,
-        descricao: "Programação"
+      cursos: [],
+      curso: {
+        id: 10001,
+        nome: "EDO",
+        descricao: "Estrutura de dados 1",
+        initDate: new Date(),
+        endDate: new Date(),
+        qtdAluno: 40,
+        categoria: "Processos"
       },
+      categorias: [],
       show: false,
       showNew: false,
     }
@@ -22,9 +29,23 @@ class Categorias extends React.Component {
 
   componentDidMount() {
     this.update();
+    this.getCategorias();
   }
 
   update() {
+    let that = this;
+    axios.get('http://localhost:8000/cursos/all/')
+      .then(function (response) {
+        // handle success
+        that.setState({ cursos: response.data });
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error);
+      })
+  }
+
+  getCategorias() {
     let that = this;
     axios.get('http://localhost:8000/categorias/all/')
       .then(function (response) {
@@ -39,37 +60,47 @@ class Categorias extends React.Component {
 
   delete(id) {
     let that = this;
-    axios.delete(`http://localhost:8000/categorias/delete/${id}`)
+    axios.delete(`http://localhost:8000/cursos/delete/${id}`)
       .then(function (response) {
         that.update()
       })
       .catch(function (error) {
-        alert(`error deleting categoria id:${id}`)
+        alert(`error deleting curso id:${id}`)
         that.update()
       })
   }
 
-  submitCategoria() {
+  submitCurso() {
     let that = this;
-    axios.put(`http://localhost:8000/categorias/put/`, this.state.categoria)
+    axios.post(`http://localhost:8000/cursos/save/`, {
+      ...this.state.curso,
+      initDate: this.state.curso.initDate.getTime(),
+      endDate: this.state.curso.endDate.getTime(),
+      categoria: this.state.categorias.find(categoria => categoria.descricao === this.state.curso.categoria)
+    })
       .then(function (response) {
         that.update()
       })
       .catch(function (error) {
-        //alert(`error updating categoria id:${this.state.categoria.id}`)
+        //alert(`error updating curso id:${this.state.curso.id}`)
         console.log(error)
         that.update()
       })
   }
 
-  submitNewCategoria() {
+  submitNewCurso() {
     let that = this;
-    axios.post(`http://localhost:8000/categorias/save/`, this.state.categoria)
+    axios.post(`http://localhost:8000/cursos/save/`, {
+      ...this.state.curso,
+      initDate: this.state.curso.initDate.getTime(),
+      endDate: this.state.curso.endDate.getTime(),
+      categoria: this.state.categorias.find(categoria => categoria.descricao === this.state.curso.categoria)
+    })
       .then(function (response) {
         that.update()
       })
       .catch(function (error) {
-        //alert(`error updating categoria id:${this.state.categoria.id}`)
+        //alert(`error updating curso id:${this.state.curso.id}`)
         console.log(error)
         that.update()
       })
@@ -80,14 +111,26 @@ class Categorias extends React.Component {
       <div style={stylesheet.mainHome}>
         <Card style={stylesheet.cardHome} className="text-center">
           <Card.Header>
-            <Card.Title><h1>Categorias</h1></Card.Title>
+            <Card.Title><h1>Cursos</h1></Card.Title>
           </Card.Header>
           <Card.Body style={stylesheet.cardBodyHome}>
             <Card.Text>
               <div style={{ width: '100%', height: '100%' }}>
-                <Row style={stylesheet.rowCategorias}>
+                <Row style={stylesheet.rowCursos}>
                   <Col>
-                    <h3>Código</h3>
+                    <h3>Nome</h3>
+                  </Col>
+                  <Col>
+                    <h3>Descrição</h3>
+                  </Col>
+                  <Col>
+                    <h3>Data Inicial</h3>
+                  </Col>
+                  <Col>
+                    <h3>Data Final</h3>
+                  </Col>
+                  <Col>
+                    <h3>Qtd Alunos</h3>
                   </Col>
                   <Col>
                     <h3>Categoria</h3>
@@ -95,23 +138,35 @@ class Categorias extends React.Component {
                   <Col>
                   </Col>
                 </Row>
-                {this.state.categorias.sort((a,b)=>a.codigo-b.codigo).map(categoria => <>
-                  <Row className="rowHoover" style={stylesheet.rowCategorias}>
+                {this.state.cursos.sort((a, b) => a.codigo - b.codigo).map(curso => <>
+                  <Row className="rowHoover" style={stylesheet.rowCursos}>
                     <Col>
-                      <div style={stylesheet.rowTextCategorias}>{categoria.codigo}</div>
+                      <div style={stylesheet.rowTextCursos}>{curso.nome}</div>
                     </Col>
                     <Col>
-                      <div style={stylesheet.rowTextCategorias}>{categoria.descricao}</div>
+                      <div style={stylesheet.rowTextCursos}>{curso.descricao}</div>
                     </Col>
                     <Col>
-                      <Button style={stylesheet.buttonCategoria} onClick={() => { this.setState({ show: true, categoria }) }}>Edit</Button>
-                      <Button style={stylesheet.buttonCategoria} onClick={() => { this.delete(categoria.id) }}>Delete</Button>
+                      <div style={stylesheet.rowTextCursos}>{dateFormat((new Date(curso.initDate)), "dd/mm/yyyy H:mm")}</div>
+                    </Col>
+                    <Col>
+                      <div style={stylesheet.rowTextCursos}>{dateFormat((new Date(curso.endDate)), "dd/mm/yyyy H:mm")}</div>
+                    </Col>
+                    <Col>
+                      <div style={stylesheet.rowTextCursos}>{curso.qtdAluno}</div>
+                    </Col>
+                    <Col>
+                      <div style={stylesheet.rowTextCursos}>{curso.categoria.descricao}</div>
+                    </Col>
+                    <Col>
+                      <Button style={stylesheet.buttonCurso} onClick={() => { this.setState({ show: true, curso: {...curso, initDate: new Date(curso.initDate), endDate: new Date(curso.endDate), categoria: curso.categoria.descricao} }) }}>Edit</Button>
+                      <Button style={stylesheet.buttonCurso} onClick={() => { this.delete(curso.id) }}>Delete</Button>
                     </Col>
                   </Row>
                 </>)}
                 <Row style={stylesheet.endButtonRow}>
                   <Col>
-                    <Button onClick={()=>{this.setState({showNew:true,categoria:{id:"",codigo:"",descricao:""}})}}>Add</Button>
+                    <Button onClick={() => { this.setState({ showNew: true, curso: { nome: "", initDate: new Date(), descricao: "", endDate: new Date(), qtdAluno: "", categoria: "" } }); this.getCategorias(); }}>Add</Button>
                   </Col>
                 </Row>
               </div>
@@ -121,42 +176,76 @@ class Categorias extends React.Component {
       </div>
       <Modal centered show={this.state.show} onHide={() => { this.setState({ show: false }) }}>
         <Modal.Header closeButton>
-          <Modal.Title>Editar Categoria</Modal.Title>
+          <Modal.Title>Editar Curso</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <h4 style={{ marginBottom: '10px' }}>Código:</h4>
-          <input type="text" id="codigo" value={this.state.categoria.codigo} onChange={(event) => { this.setState({ categoria: { ...this.state.categoria, codigo: event.target.value } }); }} className="form-control login-input" placeholder="Código" />
+          <h4 style={{ marginBottom: '10px' }}>Nome:</h4>
+          <input type="text" id="nome" value={this.state.curso.nome} onChange={async (event) => { this.setState({ curso: { ...this.state.curso, nome: event.target.value } }); }} className="form-control login-input" placeholder="Nome" />
           <hr />
           <h4 style={{ marginBottom: '10px', marginTop: '15px' }}>Descrição:</h4>
-          <input type="text" id="descricao" value={this.state.categoria.descricao} onChange={(event) => { this.setState({ categoria: { ...this.state.categoria, descricao: event.target.value } }); }} className="form-control login-input" placeholder="Descrição" />
-
+          <input type="text" id="descricao" value={this.state.curso.descricao} onChange={async (event) => { this.setState({ curso: { ...this.state.curso, descricao: event.target.value } }); }} className="form-control login-input" placeholder="Descrição" />
+          <hr />
+          <h4 style={{ marginBottom: '10px', marginTop: '15px' }}>Data Inicial:</h4>
+          <DateTimePicker onChange={async (event) => { this.setState({ curso: { ...this.state.curso, initDate: event } }); }} value={this.state.curso.initDate} />
+          <hr />
+          <h4 style={{ marginBottom: '10px', marginTop: '15px' }}>Data Final:</h4>
+          <DateTimePicker onChange={async (event) => { this.setState({ curso: { ...this.state.curso, endDate: event } }); }} value={this.state.curso.endDate} />
+          <hr />
+          <h4 style={{ marginBottom: '10px', marginTop: '15px' }}>Qtd Alunos:</h4>
+          <input type="text" id="qtdAluno" value={this.state.curso.qtdAluno} onChange={async (event) => { this.setState({ curso: { ...this.state.curso, qtdAluno: event.target.value } }); }} className="form-control login-input" placeholder="Descrição" />
+          <hr />
+          <h4 style={{ marginBottom: '10px', marginTop: '15px' }}>Categoria:</h4>
+          <Form.Group>
+            <Form.Control as="select" onChange={async (event)=>{this.setState({ curso: { ...this.state.curso, categoria: event.target.value }})}} defaultValue={this.state.curso.categoria}>
+              {this.state.categorias.map(categoria=>
+                <option>{categoria.descricao}</option>
+              )}
+            </Form.Control>
+          </Form.Group>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => { this.setState({ show: false }) }}>
             Voltar
           </Button>
-          <Button variant="primary" onClick={() => { this.setState({ show: false }); this.submitCategoria() }}>
+          <Button variant="primary" onClick={() => { this.setState({ show: false }); this.submitCurso() }}>
             Alterar
           </Button>
         </Modal.Footer>
       </Modal>
       <Modal centered show={this.state.showNew} onHide={() => { this.setState({ showNew: false }) }}>
         <Modal.Header closeButton>
-          <Modal.Title>Nova Categoria</Modal.Title>
+          <Modal.Title>Nova Curso</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <h4 style={{ marginBottom: '10px' }}>Código:</h4>
-          <input type="text" id="codigo" value={this.state.categoria.codigo} onChange={(event) => { this.setState({ categoria: { ...this.state.categoria, codigo: event.target.value } }); }} className="form-control login-input" placeholder="Código" />
+          <h4 style={{ marginBottom: '10px' }}>Nome:</h4>
+          <input type="text" id="nome" value={this.state.curso.nome} onChange={async (event) => { this.setState({ curso: { ...this.state.curso, nome: event.target.value } }); }} className="form-control login-input" placeholder="Nome" />
           <hr />
           <h4 style={{ marginBottom: '10px', marginTop: '15px' }}>Descrição:</h4>
-          <input type="text" id="descricao" value={this.state.categoria.descricao} onChange={(event) => { this.setState({ categoria: { ...this.state.categoria, descricao: event.target.value } }); }} className="form-control login-input" placeholder="Descrição" />
-
+          <input type="text" id="descricao" value={this.state.curso.descricao} onChange={async (event) => { this.setState({ curso: { ...this.state.curso, descricao: event.target.value } }); }} className="form-control login-input" placeholder="Descrição" />
+          <hr />
+          <h4 style={{ marginBottom: '10px', marginTop: '15px' }}>Data Inicial:</h4>
+          <DateTimePicker onChange={async (event) => { this.setState({ curso: { ...this.state.curso, initDate: event } }); }} value={this.state.curso.initDate} />
+          <hr />
+          <h4 style={{ marginBottom: '10px', marginTop: '15px' }}>Data Final:</h4>
+          <DateTimePicker onChange={async (event) => { this.setState({ curso: { ...this.state.curso, endDate: event } }); }} value={this.state.curso.endDate} />
+          <hr />
+          <h4 style={{ marginBottom: '10px', marginTop: '15px' }}>Qtd Alunos:</h4>
+          <input type="text" id="qtdAluno" value={this.state.curso.qtdAluno} onChange={async (event) => { this.setState({ curso: { ...this.state.curso, qtdAluno: event.target.value } }); }} className="form-control login-input" placeholder="Descrição" />
+          <hr />
+          <h4 style={{ marginBottom: '10px', marginTop: '15px' }}>Categoria:</h4>
+          <Form.Group>
+            <Form.Control as="select" onChange={async (event) => { this.setState({ curso: { ...this.state.curso, categoria: event.target.value } }) }}>
+              {this.state.categorias.map(categoria =>
+                <option>{categoria.descricao}</option>
+              )}
+            </Form.Control>
+          </Form.Group>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => { this.setState({ showNew: false }) }}>
-          Voltar
+            Voltar
           </Button>
-          <Button variant="primary" onClick={() => { this.setState({ showNew: false }); this.submitNewCategoria() }}>
+          <Button variant="primary" onClick={() => { this.setState({ showNew: false }); this.submitNewCurso() }}>
             Adicionar
           </Button>
         </Modal.Footer>
@@ -181,24 +270,24 @@ const stylesheet = {
     width: '100%',
     height: '100%',
   },
-  rowCategorias: {
+  rowCursos: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     paddingBottom: "8px",
-    marginTop: "5px",
+    paddingTop: "5px",
     borderBottom: "1px solid black",
   },
-  rowTextCategorias: {
+  rowTextCursos: {
   },
   endButtonRow: {
     marginTop: '35px'
   },
   addButton: {
   },
-  buttonCategoria: {
-    marginLeft: '30px'
+  buttonCurso: {
+    marginLeft: '5px'
   }
 }
 
-export default Categorias;
+export default Cursos;

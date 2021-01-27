@@ -1,6 +1,7 @@
 
 package br.com.cast.avaliacao.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,7 +24,8 @@ public class Categoria {
 
     private int codigo;
     private String descricao;
-
+    
+    @JsonIgnore
     @OneToMany(mappedBy = "categoria")
     private List<Curso> cursos;
 

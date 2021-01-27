@@ -90,7 +90,7 @@ class Categorias extends React.Component {
                     <h3>Código</h3>
                   </Col>
                   <Col>
-                    <h3>Categoria</h3>
+                    <h3>Descrição</h3>
                   </Col>
                   <Col>
                   </Col>
@@ -186,7 +186,7 @@ const stylesheet = {
     alignItems: 'center',
     justifyContent: 'center',
     paddingBottom: "8px",
-    marginTop: "5px",
+    paddingTop: "5px",
     borderBottom: "1px solid black",
   },
   rowTextCategorias: {

@@ -15,7 +15,7 @@ const MyRoute = ({ component: Component, ...rest }) => (
       <div style={{ width: "30%" }}>
       </div>
       <a href="/" style={{ width: "500%", textAlign: "center", fontWeight: "600", fontFamily: "UnBPro, sans-serif", fontSize: "calc(22px + 6 * ((100vw - 320px) / 680))", textDecoration: "none", color:"#f7f7f7", textShadow:'2px 1px 5px black' }}>
-        Gerenciamento Cursos para Turma A
+        Gerenciamento de Cursos para Turma A
       </a>
       <div style={{ width: "15%", textAlign: "right" }}>
         <NavDropdown title={<img style={{ width: "auto", height: "40px", marginRight: "20px" }} id="changeOnHover"  alt="" src={process.env.PUBLIC_URL + "/img/Vector.png"} />}>
