@@ -56,7 +56,7 @@ class Categorias extends React.Component {
         that.update()
       })
       .catch(function (error) {
-        //alert(`error updating categoria id:${this.state.categoria.id}`)
+        alert(`Datas conflitantes!`)
         console.log(error)
         that.update()
       })
@@ -69,7 +69,7 @@ class Categorias extends React.Component {
         that.update()
       })
       .catch(function (error) {
-        //alert(`error updating categoria id:${this.state.categoria.id}`)
+        alert(`Datas conflitantes!`)
         console.log(error)
         that.update()
       })

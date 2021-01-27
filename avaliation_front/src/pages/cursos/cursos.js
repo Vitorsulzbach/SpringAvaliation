@@ -21,7 +21,11 @@ class Cursos extends React.Component {
         qtdAluno: 40,
         categoria: "Processos"
       },
-      categorias: [],
+      categorias: [{
+        "id": 10001,
+        "codigo": 1,
+        "descricao": "Comportamental"
+    }],
       show: false,
       showNew: false,
     }
@@ -82,7 +86,7 @@ class Cursos extends React.Component {
         that.update()
       })
       .catch(function (error) {
-        //alert(`error updating curso id:${this.state.curso.id}`)
+        alert(`Datas conflitantes!`)
         console.log(error)
         that.update()
       })
@@ -100,7 +104,7 @@ class Cursos extends React.Component {
         that.update()
       })
       .catch(function (error) {
-        //alert(`error updating curso id:${this.state.curso.id}`)
+        alert(`Datas conflitantes!`)
         console.log(error)
         that.update()
       })
@@ -166,7 +170,7 @@ class Cursos extends React.Component {
                 </>)}
                 <Row style={stylesheet.endButtonRow}>
                   <Col>
-                    <Button onClick={() => { this.setState({ showNew: true, curso: { nome: "", initDate: new Date(), descricao: "", endDate: new Date(), qtdAluno: "", categoria: "" } }); this.getCategorias(); }}>Add</Button>
+                    <Button onClick={() => { this.setState({ showNew: true, curso: { nome: "", initDate: new Date(), descricao: "", endDate: new Date(), qtdAluno: "", categoria: this.state.categorias[0].descricao } }); this.getCategorias(); }}>Add</Button>
                   </Col>
                 </Row>
               </div>
@@ -234,7 +238,7 @@ class Cursos extends React.Component {
           <hr />
           <h4 style={{ marginBottom: '10px', marginTop: '15px' }}>Categoria:</h4>
           <Form.Group>
-            <Form.Control as="select" onChange={async (event) => { this.setState({ curso: { ...this.state.curso, categoria: event.target.value } }) }}>
+            <Form.Control as="select" onChange={async (event) => { this.setState({ curso: { ...this.state.curso, categoria: event.target.value } }) }} defaultValue={this.state.categorias[0].descricao}>
               {this.state.categorias.map(categoria =>
                 <option>{categoria.descricao}</option>
               )}
