@@ -5,7 +5,7 @@ import { Card } from "react-bootstrap";
 class Login extends React.Component {
   render() {
     return (
-      <div className="mainHome" style={stylesheet.mainHome}>
+      <div style={stylesheet.mainHome}>
         <Card style={stylesheet.cardHome}>
             <Card.Body style={stylesheet.cardBodyHome}>
               <h1>Bem vindo!</h1>
