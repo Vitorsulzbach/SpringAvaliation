@@ -65,6 +65,19 @@ class Categorias extends React.Component {
       })
   }
 
+  submitNewCategoria() {
+    let that = this;
+    axios.post(`http://localhost:8000/categorias/save/`, this.state.categoria)
+      .then(function (response) {
+        that.update()
+      })
+      .catch(function (error) {
+        //alert(`error updating categoria id:${this.state.categoria.id}`)
+        console.log(error)
+        that.update()
+      })
+  }
+
   render() {
     return (<>
       <div style={stylesheet.mainHome}>
@@ -101,7 +114,7 @@ class Categorias extends React.Component {
                 </>)}
                 <Row style={stylesheet.endButtonRow}>
                   <Col>
-                    <Button>Add</Button>
+                    <Button onClick={()=>{this.setState({showNew:true,categoria:{id:"",codigo:"",descricao:""}})}}>Add</Button>
                   </Col>
                 </Row>
               </div>
@@ -123,10 +136,10 @@ class Categorias extends React.Component {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => { this.setState({ show: false }) }}>
-            Close
+            Voltar
           </Button>
           <Button variant="primary" onClick={() => { this.setState({ show: false }); this.submitCategoria() }}>
-            Save Changes
+            Alterar
           </Button>
         </Modal.Footer>
       </Modal>
@@ -139,15 +152,15 @@ class Categorias extends React.Component {
           <input type="text" id="codigo" value={this.state.categoria.codigo} onChange={(event) => { this.setState({ categoria: { ...this.state.categoria, codigo: event.target.value } }); }} className="form-control login-input" placeholder="Código" />
           <hr />
           <h4 style={{ marginBottom: '10px', marginTop: '15px' }}>Descrição:</h4>
-          <input type="text" id="descricao" value={this.state.categoria.descricao} onChange={(event) => { this.setState({ categoria: { ...this.state.descricao, codigo: event.target.value } }); }} className="form-control login-input" placeholder="Descrição" />
+          <input type="text" id="descricao" value={this.state.categoria.descricao} onChange={(event) => { this.setState({ categoria: { ...this.state.categoria, descricao: event.target.value } }); }} className="form-control login-input" placeholder="Descrição" />
 
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => { this.setState({ showNew: false }) }}>
-            Close
+          Voltar
           </Button>
-          <Button variant="primary">
-            Save Changes
+          <Button variant="primary" onClick={() => { this.setState({ showNew: false }); this.submitNewCategoria() }}>
+            Adicionar
           </Button>
         </Modal.Footer>
       </Modal>
