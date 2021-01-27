@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import br.com.cast.avaliacao.repository.CursoRepository;
 import br.com.cast.avaliacao.model.Curso;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,7 +20,7 @@ public class CursoService {
     public List<Curso> listAll() {
         return repo.findAll();
     }
-
+    
     public Curso save(Curso curso) {
         if (curso.getInitDate() < curso.getEndDate()) {
             List<Curso> cursos = repo.findAll();
@@ -27,6 +28,9 @@ public class CursoService {
                     .filter(cursoFinded -> !(((cursoFinded.getEndDate() < curso.getEndDate()) && (cursoFinded.getEndDate() < curso.getInitDate())) || ((cursoFinded.getInitDate() > curso.getEndDate()) && (cursoFinded.getInitDate() > curso.getInitDate()))))
                     .collect(Collectors.toList());
             if (cursosInBetween.isEmpty()) {
+                return repo.save(curso);
+            }
+            if (Objects.equals(cursosInBetween.get(0).getId(), curso.getId())) {
                 return repo.save(curso);
             }
         }
